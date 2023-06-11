@@ -69,7 +69,7 @@ const Login = () => {
                     id="email"
                     name="email"
                     type="email"
-                    placeholder="e.g. johndoe@gmail.com"
+                    placeholder="Enter your email"
                     autoComplete="email"
                     required
                     onChange={onChangeInput}
