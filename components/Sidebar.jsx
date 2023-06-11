@@ -3,12 +3,15 @@ import Link from "next/link";
 import { MdOutlineExplore } from "react-icons/md";
 import { BsChatSquareDots } from "react-icons/bs";
 import { AiOutlinePlusCircle } from "react-icons/ai";
+import {BiLogOut} from "react-icons/bi"
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { CgLivePhoto } from "react-icons/cg";
 import { AiFillHome } from "react-icons/ai";
 import { LuSearch } from "react-icons/lu";
+import useUser from "@/hooks/useUser";
 
 const Sidebar = () => {
+  const {logout}=useUser();
   return (
     <>
       <div className="text-white shadow-md bg-[#01250B] w-[20%] h-screen p-5 fixed md:block hidden">
@@ -46,6 +49,12 @@ const Sidebar = () => {
             <AiOutlinePlusCircle size={22} />
             <div className="text-lg font-bold pt-1">Create</div>
           </button>
+
+          <button className="flex items-center gap-3 hover:bg-[#014501] px-6 py-3 rounded-xl focus:bg-[#001B00] active:bg-[#001B00] mt-1" onClick={logout}>
+            <BiLogOut size={22} />
+            <div className="text-lg font-bold pt-1">Logout</div>
+          </button>
+          
         </div>
         <Link
           href="/profile"
