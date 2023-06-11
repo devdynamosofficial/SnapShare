@@ -11,7 +11,7 @@ import { LuSearch } from "react-icons/lu";
 import useUser from "@/hooks/useUser";
 
 const Sidebar = () => {
-  const {logout}=useUser();
+  const {logout, isLoadingAccount, currentAccount}=useUser();
   return (
     <>
       <div className="text-white shadow-md bg-[#01250B] w-[20%] h-screen p-5 fixed md:block hidden">
@@ -27,10 +27,17 @@ const Sidebar = () => {
             <AiFillHome size={22} />
             <div className="text-lg font-bold pt-2">Home</div>
           </Link>
-          <button className="flex items-center gap-3 hover:bg-[#014501] px-6 py-3 rounded-xl focus:bg-[#001B00] active:bg-[#001B00]">
+          <Link
+            href="/search"
+            className="flex items-center gap-3 hover:bg-[#014501] px-6 py-3 rounded-xl focus:bg-[#001B00] active:bg-[#001B00] mt-1"
+          >
+            <LuSearch size={22} />
+            <div className="text-lg font-bold pt-1">Search</div>
+          </Link>
+          {/* <button className="flex items-center gap-3 hover:bg-[#014501] px-6 py-3 rounded-xl focus:bg-[#001B00] active:bg-[#001B00]">
             <LuSearch size={22} />
             <div className="text-lg font-bold pt-2">Search</div>
-          </button>
+          </button> */}
           <Link
             href="/discover"
             className="flex items-center gap-3 hover:bg-[#014501] px-6 py-3 rounded-xl focus:bg-[#001B00] active:bg-[#001B00] mt-1"
@@ -68,8 +75,8 @@ const Sidebar = () => {
             className="rounded-xl"
           />
           <div className="flex flex-col">
-            <div className="text-lg font-bold text-white">John Doe</div>
-            <div className="text-slate-500 text-md">Photographer</div>
+            <div className="text-lg font-bold text-white">{ currentAccount && (isLoadingAccount ? "Loading" : currentAccount.name) }</div>
+            <div className="text-slate-500 text-md">{ currentAccount && (isLoadingAccount ? "Loading" : currentAccount.email) }</div>
           </div>
           <div className="flex justify-end items-end w-full">
             <MdKeyboardArrowRight size={30} />
