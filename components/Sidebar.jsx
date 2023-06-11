@@ -3,15 +3,29 @@ import Link from "next/link";
 import { MdOutlineExplore } from "react-icons/md";
 import { BsChatSquareDots } from "react-icons/bs";
 import { AiOutlinePlusCircle } from "react-icons/ai";
-import {BiLogOut} from "react-icons/bi"
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { CgLivePhoto } from "react-icons/cg";
 import { AiFillHome } from "react-icons/ai";
 import { LuSearch } from "react-icons/lu";
-import useUser from "@/hooks/useUser";
+import { useAtom } from "jotai";
+import FileAtom from "@/atoms/FileAtom";
+import UploadAtom from "@/atoms/UploadAtom";
+import Post from "./Post";
 
 const Sidebar = () => {
-  const {logout}=useUser();
+  const [showPopup, setShowPopup] = useAtom(UploadAtom);
+  const [file, setFile] = useAtom(FileAtom);
+
+  const handleButtonClick = () => {
+    setShowPopup(true);
+    document.body.style.overflow = "hidden";
+  };
+
+  const handelInput = (e) => {
+    const chosenFile = e.target.files[0];
+    setFile(chosenFile);
+  };
+
   return (
     <>
       <div className="text-white shadow-md bg-[#01250B] w-[20%] h-screen p-5 fixed md:block hidden">
@@ -45,16 +59,13 @@ const Sidebar = () => {
             <BsChatSquareDots size={22} />
             <div className="text-lg font-bold ">Chats</div>
           </Link>
-          <button className="flex items-center gap-3 hover:bg-[#014501] px-6 py-3 rounded-xl focus:bg-[#001B00] active:bg-[#001B00] mt-1">
+          <button
+            onClick={handleButtonClick}
+            className="flex items-center gap-3 hover:bg-[#014501] px-6 py-3 rounded-xl focus:bg-[#001B00] active:bg-[#001B00] mt-1"
+          >
             <AiOutlinePlusCircle size={22} />
             <div className="text-lg font-bold pt-1">Create</div>
           </button>
-
-          <button className="flex items-center gap-3 hover:bg-[#014501] px-6 py-3 rounded-xl focus:bg-[#001B00] active:bg-[#001B00] mt-1" onClick={logout}>
-            <BiLogOut size={22} />
-            <div className="text-lg font-bold pt-1">Logout</div>
-          </button>
-          
         </div>
         <Link
           href="/profile"
@@ -77,31 +88,38 @@ const Sidebar = () => {
         </Link>
       </div>
       <div className="w-full fixed bg-[#001B00]/30 backdrop-blur-md border-[#414141]/50 border bottom-0 px-20 flex justify-evenly items-center text-white py-1 md:hidden">
-      <Link
-            href="/home"
-            className="flex items-center gap-3 hover:bg-[#014501] px-6 py-3 rounded-xl focus:bg-[#001B00] active:bg-[#001B00]"
-          >
-            <AiFillHome size={25} />
-          </Link>
-          <button className="flex items-center gap-3 hover:bg-[#014501] px-6 py-3 rounded-xl focus:bg-[#001B00] active:bg-[#001B00]">
-            <LuSearch size={25} />
-          </button>
-          <Link
-            href="/discover"
-            className="flex items-center gap-3 hover:bg-[#014501] px-6 py-3 rounded-xl focus:bg-[#001B00] active:bg-[#001B00] mt-1"
-          >
-            <MdOutlineExplore size={25} />
-          </Link>
-          <Link
-            href="/chat"
-            className="flex items-center gap-3 hover:bg-[#014501] px-6 py-3 rounded-xl focus:bg-[#001B00] active:bg-[#001B00] mt-2"
-          >
-            <BsChatSquareDots size={25} />
-          </Link>
-          <button className="flex items-center gap-3 hover:bg-[#014501] px-6 py-3 rounded-xl focus:bg-[#001B00] active:bg-[#001B00] mt-1">
-            <AiOutlinePlusCircle size={25} />
-
-          </button>
+        <Link
+          href="/home"
+          className="flex items-center gap-3 hover:bg-[#014501] px-6 py-3 rounded-xl focus:bg-[#001B00] active:bg-[#001B00]"
+        >
+          <AiFillHome size={25} />
+        </Link>
+        <button className="flex items-center gap-3 hover:bg-[#014501] px-6 py-3 rounded-xl focus:bg-[#001B00] active:bg-[#001B00]">
+          <LuSearch size={25} />
+        </button>
+        <Link
+          href="/discover"
+          className="flex items-center gap-3 hover:bg-[#014501] px-6 py-3 rounded-xl focus:bg-[#001B00] active:bg-[#001B00] mt-1"
+        >
+          <MdOutlineExplore size={25} />
+        </Link>
+        <Link
+          href="/chat"
+          className="flex items-center gap-3 hover:bg-[#014501] px-6 py-3 rounded-xl focus:bg-[#001B00] active:bg-[#001B00] mt-2"
+        >
+          <BsChatSquareDots size={25} />
+        </Link>
+        <button
+          onClick={handleButtonClick}
+          className="flex items-center gap-3 hover:bg-[#014501] px-6 py-3 rounded-xl focus:bg-[#001B00] active:bg-[#001B00] mt-1"
+        >
+          <AiOutlinePlusCircle size={25} />
+        </button>
+      </div>
+      <div
+        className={showPopup ? "w-full h-screen fixed bg-black/60" : "hidden"}
+      >
+        <Post />
       </div>
     </>
   );
