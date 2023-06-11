@@ -16,7 +16,7 @@ const Home = () => {
     const router = useRouter();
     
    
-    //const photos=storage.listFiles('6480d7c2b7e583d5cf63');
+    
     React.useEffect(() => {
       if (!currentAccount && !isLoadingAccount) {
         // If there is no account present and we finish the get account request redirect to login
