@@ -42,9 +42,10 @@ const Signup = () => {
     try {
       const userAccount = await promise;
       // If this code is reached it means resource was successfully created, redirect the logged user to the sign in page
-
+      const databse_id=process.env.NEXT_PUBLIC_DATABASE_ID;
+      const user_collection_id=process.env.NEXT_PUBLIC_USER_COLLECTION_ID;
       const databases=new Databases(appwriteClient);
-      databases.createDocument('6484b6a17925cc4b4387','6484b6ad4875a7457660',ID.unique(),{
+      databases.createDocument(databse_id,user_collection_id,ID.unique(),{
         name:name,
         age:age,
         gender:gender,
