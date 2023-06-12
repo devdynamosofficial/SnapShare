@@ -7,22 +7,13 @@ import Image from "next/image";
 import FileAtom from "@/atoms/FileAtom";
 import CaptionAtom from "@/atoms/CaptionAtom";
 import PostingAtom from "@/atoms/PostingAtom";
-import { Databases, ID, Storage } from "appwrite";
-import appwriteClient from '@/libs/appwrite';
-import useUser from "@/hooks/useUser";
-import Router from "next/router";
 
-const Post =  () => {
+const Post = () => {
   const [showPopup, setShowPopup] = useAtom(UploadAtom);
   const [isDragging, setIsDragging] = useState(false);
   const [file, setFile] = useAtom(FileAtom);
   const [caption, setCaption] = useAtom(CaptionAtom);
   const [postClicked, setPostClicked] = useAtom(PostingAtom);
-  const {currentAccount}=useUser();
-  
-  
-  
-  const storage = new Storage(appwriteClient);
 
   const handleClosePopup = () => {
     setShowPopup(false);
@@ -55,39 +46,11 @@ const Post =  () => {
     setFile(chosenFile);
   };
 
-  const handlePost = async () => {
-    
-    const databases = new Databases(appwriteClient);
-          const fileId=ID.unique();
-          console.log(fileId);
-          const promise = storage.createFile(
-              process.env.NEXT_PUBLIC_BUCKET_ID,
-              fileId,
-              file
-          );
-          const photoId= await (promise);
-          console.log(photoId);
-          try {
-            if(photoId.$id){
-              const create_document = await databases.createDocument(process.env.NEXT_PUBLIC_DATABASE_ID, process.env.NEXT_PUBLIC_POST_COLLECTION_ID,ID.unique() , {
-                user_id:currentAccount.$id,
-                post_id:photoId.$id,
-                react_count:0,
-                image_location:`https://cloud.appwrite.io/v1/storage/buckets/6480d7c2b7e583d5cf63/files/${photoId.$id}/view?project=6480d2c47d708d9490c9&mode=admin`,
-                caption:caption,
-                name:currentAccount.name,
-              });
-              Router.reload();
-            }
-          } catch (error) {
-            console.log(error);
-          }
-          
-          
-        
+  const handlePost = () => {
     document.body.style.overflow = "auto";
-    setShowPopup(false)
+    setShowPopup(false);
     setPostClicked(true);
+    setFile(null);
   };
 
   const clearPost = () => {
@@ -97,7 +60,7 @@ const Post =  () => {
 
   return (
     <>
-      <div className="w-full md:w-[40%] mt-28 md:mt-10 gap-3 mx-auto flex flex-col justify-center items-end">
+      <div className="w-full md:w-[40%] mt-28 md:mt-10 gap-3 mx-auto flex flex-col justify-center items-end z-50">
         <div
           onDragEnter={handleEnter}
           onDragLeave={handleLeave}
@@ -121,7 +84,7 @@ const Post =  () => {
               </div>
 
               <input
-              onChange={(e) => setCaption(e.target.value)}
+                onChange={(e) => setCaption(e.target.value)}
                 type="text"
                 className="w-full px-4 py-2 outline-none border-slate-400 border-b-2"
                 placeholder="Add a comment"
@@ -173,22 +136,6 @@ const Post =  () => {
             </div>
           )}
         </div>
-        {postClicked && file && (
-          <div className="mt-4">
-            <h3>Posted Image:</h3>
-            <Image
-              src={URL.createObjectURL(file)}
-              alt="Posted Image"
-              height={200}
-              width={200}
-            />
-          </div>
-        )}
-        {postClicked && !file && (
-          <div className="mt-4">
-            <h3>No Image Posted</h3>
-          </div>
-        )}
       </div>
     </>
   );
