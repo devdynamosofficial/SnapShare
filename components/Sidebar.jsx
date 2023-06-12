@@ -6,7 +6,7 @@ import { AiOutlinePlusCircle } from "react-icons/ai";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { CgLivePhoto } from "react-icons/cg";
 import { AiFillHome } from "react-icons/ai";
-import { LuSearch } from "react-icons/lu";
+import { IoSearch } from "react-icons/io5";
 import { useAtom } from "jotai";
 import FileAtom from "@/atoms/FileAtom";
 import UploadAtom from "@/atoms/UploadAtom";
@@ -42,7 +42,7 @@ const Sidebar = () => {
             <div className="text-lg font-bold pt-2">Home</div>
           </Link>
           <button className="flex items-center gap-3 hover:bg-[#014501] px-6 py-3 rounded-xl focus:bg-[#001B00] active:bg-[#001B00]">
-            <LuSearch size={22} />
+            <IoSearch size={22} />
             <div className="text-lg font-bold pt-2">Search</div>
           </button>
           <Link
@@ -95,7 +95,7 @@ const Sidebar = () => {
           <AiFillHome size={25} />
         </Link>
         <button className="flex items-center gap-3 hover:bg-[#014501] px-6 py-3 rounded-xl focus:bg-[#001B00] active:bg-[#001B00]">
-          <LuSearch size={25} />
+          <IoSearch size={25} />
         </button>
         <Link
           href="/discover"

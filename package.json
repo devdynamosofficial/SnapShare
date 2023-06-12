@@ -9,12 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "appwrite": "^11.0.0",
+    "@headlessui/react": "^1.7.15",
     "autoprefixer": "10.4.14",
     "axios": "^1.4.0",
     "eslint": "8.42.0",
     "eslint-config-next": "13.4.4",
-    "framer-motion": "^10.12.16",
     "jotai": "^2.1.1",
     "next": "13.4.4",
     "postcss": "8.4.24",
@@ -22,7 +21,6 @@
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.4.1",
     "react-icons": "^4.9.0",
-    "react-transition-group": "^4.4.5",
     "swr": "^2.1.5",
     "tailwindcss": "3.3.2"
   }

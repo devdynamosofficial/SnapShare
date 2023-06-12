@@ -1,51 +1,27 @@
 import Signup from "./Signup";
 import { useAtom } from "jotai";
 import LoginSignupAtom from "@/atoms/LoginSignupAtom";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import { CgLivePhoto } from "react-icons/cg";
-import appwriteClient from "@/libs/appwrite"
-import { Account } from "appwrite";
-import { FETCH_STATUS } from "@/utils/constants";
-import Link from "next/link";
 
 const Login = () => {
-  const [form, setForm] = React.useState({
-    email: '',
-    password: '',
-    error: '',
-  });
-  const [signinStatus, setSigninStatus] = React.useState(FETCH_STATUS.IDLE);
-  const router = useRouter();
-  const hasErrors = !!form.error;
-
-  const onSubmit = async (event) => {
-    event.preventDefault();
-    const { email, password } = form;
-
-    const account = new Account(appwriteClient);
-    const promise = account.createEmailSession(email, password);
-
-    try {
-      const userAccount = await promise;
-
-      setSigninStatus(FETCH_STATUS.SUCCESS);
-      router.push('/home');
-    } catch (error) {
-      setForm((currForm) => ({
-        ...currForm,
-        error: error.message,
-      }));
-      setSigninStatus(FETCH_STATUS.FAIL);
-      return;
+  const inpData = (e) => {
+    e.preventDefault();
+    if (e.target.email.value != "" && e.target.email.value != "") {
+      const userData = {
+        email: e.target.email.value,
+        password: e.target.pass.value,
+      };
+      console.log(userData);
+      router.push("/home");
     }
   };
 
-  const onChangeInput = (event) => {
-    const {
-      target: { name, value },
-    } = event;
-    setForm((currForm) => ({ ...currForm, [name]: value }));
+  const [open, setOpen] = useAtom(LoginSignupAtom);
+  const router = useRouter();
+  const create = () => {
+    setOpen((prev) => !prev);
   };
   return (
     <>
@@ -61,50 +37,39 @@ const Login = () => {
             </div>
           </div>
 
-          { (
+          {open ? (
+            <Signup />
+          ) : (
             <div className="border border-[#868686] w-full md:w-[45%] bg-white rounded-xl p-6 flex justify-center items-center">
               <div className="flex flex-col w-full gap-3 p-3">
-                <form onSubmit={onSubmit}>
+                <form onSubmit={inpData}>
                   <input
                     id="email"
-                    name="email"
                     type="email"
-                    placeholder="Enter your email"
-                    autoComplete="email"
-                    required
-                    onChange={onChangeInput}
-                    value={form.email}
                     className="px-4 py-3 mb-8 w-full rounded-xl border border-[#868686] outline-none"
-                    
+                    placeholder="Enter email"
+                    required
                   />
                   <input
-                    id="password"
-                    name="password"
                     type="password"
-                    autoComplete="current-password"
+                    className="px-4 py-3 mb-8 w-full rounded-xl border border-[#868686] outline-none"
+                    id="pass"
                     placeholder="Enter password"
                     required
-                    onChange={onChangeInput}
-                    value={form.password}
-                    className="px-4 py-3 mb-8 w-full rounded-xl border border-[#868686] outline-none"
-                    
-                    
-                    
                   />
                   <input
                     type="submit"
                     className="px-4 text-lg cursor-pointer bg-[#042F10] border-none outline-none text-white py-2 mb-8 w-full rounded-xl border border-black hover:bg-white hover:text-[#042F10] hover:shadow-lg hover:shadow-[#042F10] hover:scale-105 transition-all duration-200"
                     value="Log in"
                   />
-                  {hasErrors && (
-                <div className="border-solid py-3 px-5 rounded-md border  border-red-500 bg-red-100 text-red-500">
-                  <p>{form.error}</p>
-                </div>
-              )}
                 </form>
-                <div className="flex justify-end">
-                <Link href="/auth/signup" className="underline cursor-pointer text-green-900" >Regester here if you have no account</Link>
-              </div>
+                <div className="w-full border border-[#747373] my-4"></div>
+                <input
+                  onClick={create}
+                  type="submit"
+                  className="px-4 text-lg cursor-pointer bg-[#04531A] border-none outline-none text-white py-2 mb-3 w-4/5 md:w-1/2 mx-auto rounded-xl border border-black hover:bg-white hover:text-[#042F10] hover:shadow-lg hover:shadow-[#042F10] hover:scale-105 transition-all duration-200"
+                  value="Create account"
+                />
               </div>
             </div>
           )}
