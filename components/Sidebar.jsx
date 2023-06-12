@@ -12,9 +12,10 @@ import FileAtom from "@/atoms/FileAtom";
 import UploadAtom from "@/atoms/UploadAtom";
 import Post from "./Post";
 
-const Sidebar = () => {
+const Sidebar = (props) => {
   const [showPopup, setShowPopup] = useAtom(UploadAtom);
   const [file, setFile] = useAtom(FileAtom);
+  const user = props.user;
 
   const handleButtonClick = () => {
     setShowPopup(true);
@@ -79,8 +80,8 @@ const Sidebar = () => {
             className="rounded-xl"
           />
           <div className="flex flex-col">
-            <div className="text-lg font-bold text-white">John Doe</div>
-            <div className="text-slate-500 text-md">Photographer</div>
+            <div className="text-lg font-bold text-white">{user.currentAccount && user.currentAccount.name}</div>
+            <div className="text-slate-500 text-md">{user.currentAccount && user.currentAccount.email.slice(0, 15)+(user.currentAccount.email.length>15?"...":"")}</div>
           </div>
           <div className="flex justify-end items-end w-full">
             <MdKeyboardArrowRight size={30} />
