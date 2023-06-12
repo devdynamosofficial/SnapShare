@@ -12,7 +12,8 @@ import useUser from "@/hooks/useUser";
 import appwriteClient from '@/libs/appwrite';
 
 const Home = () => {
-  const { currentAccount, isLoadingAccount } = useUser();
+  const user = useUser();
+  const { currentAccount, isLoadingAccount } = user;
     const router = useRouter();
     
    
@@ -26,7 +27,7 @@ const Home = () => {
   return (
     <>
       <div className="flex max-w-full md:mt-0 relative">
-        <MainLayout></MainLayout>
+        <MainLayout user={user}></MainLayout>
       </div>
     </>
   );
