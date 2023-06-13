@@ -1,15 +1,19 @@
 import Signup from "./Signup";
 import { useAtom } from "jotai";
 import LoginSignupAtom from "@/atoms/LoginSignupAtom";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { CgLivePhoto } from "react-icons/cg";
 import appwriteClient from "@/libs/appwrite"
 import { Account } from "appwrite";
 import { FETCH_STATUS } from "@/utils/constants";
 import Link from "next/link";
+import LoadingAtom from "@/atoms/LoadingAtom";
+import Loading from './Loading'
 
 const Login = () => {
+  const [isLoading, setLoading] = useAtom(LoadingAtom);
+  
   const [form, setForm] = React.useState({
     email: '',
     password: '',
@@ -19,8 +23,13 @@ const Login = () => {
   const router = useRouter();
   const hasErrors = !!form.error;
 
+  useEffect(()=>{
+    setLoading(false);
+  }, []);
+  
   const onSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true);
     const { email, password } = form;
 
     const account = new Account(appwriteClient);
@@ -37,6 +46,7 @@ const Login = () => {
         error: error.message,
       }));
       setSigninStatus(FETCH_STATUS.FAIL);
+      setLoading(false);
       return;
     }
   };
@@ -49,6 +59,7 @@ const Login = () => {
   };
   return (
     <>
+    {isLoading?(<Loading text="Signing In"/>):""}
       <div className="grid place-items-center mx-auto h-screen w-full md:w-[80%]">
         <div className="w-full flex md:flex-row flex-col justify-center items-center gap-7 p-5">
           <div className="flex flex-col gap-4 p-2">
