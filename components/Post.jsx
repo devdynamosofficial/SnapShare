@@ -17,7 +17,7 @@ import { useRouter } from "next/router";
 const Post =  () => {
   const [isLoading, setLoading] = useAtom(LoadingAtom);
 
-  const [showPopup, setShowPopup] = useAtom(UploadAtom);
+  const [showPopup, setShowPopup] = useAtom(UploadAtom)
   const [isDragging, setIsDragging] = useState(false);
   const [file, setFile] = useAtom(FileAtom);
   const [caption, setCaption] = useAtom(CaptionAtom);
