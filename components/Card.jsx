@@ -21,9 +21,10 @@ const Card = ({ info, user }) => {
       re = await databases.listDocuments(process.env.NEXT_PUBLIC_DATABASE_ID, process.env.NEXT_PUBLIC_USER_COLLECTION_ID, [
         Query.equal("user_id", [info.user_id]),
       ]);
-      // console.log(re.documents[0].profile_pic);
-      if(re.documents[0].profile_pic){
-        setProfilePic(`https://cloud.appwrite.io/v1/storage/buckets/${process.env.NEXT_PUBLIC_BUCKET_ID}/files/${re.documents[0].profile_pic}/preview?quality=10&project=${process.env.NEXT_PUBLIC_PROJECT_ID}`);
+      const pic = re.documents[0] && re.documents[0].profile_pic;
+
+      if(pic){
+        setProfilePic(`https://cloud.appwrite.io/v1/storage/buckets/${process.env.NEXT_PUBLIC_BUCKET_ID}/files/${pic}/preview?quality=10&project=${process.env.NEXT_PUBLIC_PROJECT_ID}`);
       }else{
         setProfilePic(`https://cloud.appwrite.io/v1/storage/buckets/${process.env.NEXT_PUBLIC_BUCKET_ID}/files/64887b6428d789279d1c/preview?quality=10&project=${process.env.NEXT_PUBLIC_PROJECT_ID}`);
         // https://cloud.appwrite.io/v1/storage/buckets/6485deaa466e8566dbbc/files/64887b6428d789279d1c/view?project=6484b64f8a8f3fa14c4c&mode=admin

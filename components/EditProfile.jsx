@@ -54,9 +54,15 @@ const EditProfile = () => {
     }
     
 
-  var promise2 = await databases.listDocuments(process.env.NEXT_PUBLIC_DATABASE_ID,process.env.NEXT_PUBLIC_USER_COLLECTION_ID, [Query.equal('user_id', [user.$id])]);
-  var doc_id = promise2.documents[0].$id;
-  console.log(doc_id);
+    var promise2 = await databases.listDocuments(
+      process.env.NEXT_PUBLIC_DATABASE_ID,
+      process.env.NEXT_PUBLIC_USER_COLLECTION_ID,
+      [Query.equal('user_id', [user.$id])]
+    );
+    
+  
+  var doc_id = promise2.documents.length > 0 ? promise2.documents[0].$id : null;
+  console.log(promise2);
 
     if(photoId){
       console.log(photoId);
