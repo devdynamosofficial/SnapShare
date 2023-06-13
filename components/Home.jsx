@@ -12,11 +12,12 @@ import useUser from "@/hooks/useUser";
 import appwriteClient from '@/libs/appwrite';
 
 const Home = () => {
-  const { currentAccount, isLoadingAccount } = useUser();
+  const user = useUser();
+  const { currentAccount, isLoadingAccount } = user;
     const router = useRouter();
     
    
-    //const photos=storage.listFiles('6480d7c2b7e583d5cf63');
+    
     React.useEffect(() => {
       if (!currentAccount && !isLoadingAccount) {
         // If there is no account present and we finish the get account request redirect to login
@@ -26,7 +27,7 @@ const Home = () => {
   return (
     <>
       <div className="flex max-w-full md:mt-0 relative">
-        <MainLayout></MainLayout>
+        <MainLayout user={user}></MainLayout>
       </div>
     </>
   );

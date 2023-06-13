@@ -1,7 +1,7 @@
-'use client'
-import React from 'react';
 
-import { Account } from 'appwrite';
+import React, { useState } from 'react';
+
+import { Account, Databases, Query } from 'appwrite';
 import appwriteClient from '@/libs/appwrite';
 import { useRouter } from 'next/navigation';
 import { FETCH_STATUS } from '@/utils/constants';
@@ -9,6 +9,10 @@ import { FETCH_STATUS } from '@/utils/constants';
 export default function useUser() {
   const account = new Account(appwriteClient);
   const [currentAccount, setCurrentAccount] = React.useState();
+  const [friendsList, setFriendsList] = React.useState();
+  const [gotFriendsStatus, setGotFriendsStatus] = React.useState(
+    FETCH_STATUS.LOADING
+  );
   const [accountStatus, setAccountStatus] = React.useState(
     FETCH_STATUS.LOADING
   );
@@ -22,6 +26,7 @@ export default function useUser() {
 
     try {
       currentAccount = await promise;
+      getFriendsList(currentAccount);
       setAccountStatus(FETCH_STATUS.SUCCESS);
     } catch (error) {
       console.log(error);
@@ -37,6 +42,25 @@ export default function useUser() {
     router.push('/auth/signin')
   };
 
+  const getFriendsList = async (account) =>{
+    const databases = new Databases(appwriteClient);
+    const promise = databases.listDocuments(process.env.NEXT_PUBLIC_DATABASE_ID, process.env.NEXT_PUBLIC_FRIENDS_COLLECTION_ID, [
+      Query.equal("user_id", account.$id),
+      Query.limit(100)
+    ]);
+    let list = null;
+    try{
+      list = await promise;
+      setFriendsList(list.documents);
+      setGotFriendsStatus(FETCH_STATUS.SUCCESS)
+    } catch (error) {
+      console.log(error);
+      setGotFriendsStatus(FETCH_STATUS.FAIL);
+    } finally {
+      setFriendsList(list);
+    }
+  }
+
   React.useEffect(() => {
     getSession();
   }, []);
@@ -45,5 +69,7 @@ export default function useUser() {
     currentAccount,
     isLoadingAccount: accountStatus === FETCH_STATUS.LOADING,
     logout,
+    isFriendListLoaded: gotFriendsStatus == FETCH_STATUS.SUCCESS,
+    friendsList
   };
 }

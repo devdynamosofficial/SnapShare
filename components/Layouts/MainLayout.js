@@ -6,15 +6,12 @@ import { Storage } from 'appwrite';
 import Sidebar from '../Sidebar';
 import Contents from '../contents/Contents';
 
-export default function MainLayout() {
-    
-  
-    
-    //console.log(photos);
+export default function MainLayout(props) {
+
     return (
         <>
-            <Sidebar></Sidebar>
-            <Contents></Contents>
+            <Sidebar user={props.user.currentAccount}></Sidebar>
+            <Contents user={props.user}></Contents>
         </>
       
           

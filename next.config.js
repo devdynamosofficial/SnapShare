@@ -5,6 +5,6 @@ const nextConfig = {
 
 module.exports = {
   images: {
-    domains: ['randomuser.me'],
+    domains: ['cloud.appwrite.io','randomuser.me'],
   },
 }

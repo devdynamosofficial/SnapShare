@@ -7,7 +7,7 @@ import Image from "next/image";
 import FileAtom from "@/atoms/FileAtom";
 import CaptionAtom from "@/atoms/CaptionAtom";
 import PostingAtom from "@/atoms/PostingAtom";
-import { Databases, ID, Storage } from "appwrite";
+import { Databases, ID, Storage, Functions } from "appwrite";
 import appwriteClient from '@/libs/appwrite';
 import useUser from "@/hooks/useUser";
 import Router from "next/router";
@@ -66,18 +66,25 @@ const Post =  () => {
               file
           );
           const photoId= await (promise);
-          console.log(photoId);
           try {
             if(photoId.$id){
-              const create_document = await databases.createDocument(process.env.NEXT_PUBLIC_DATABASE_ID, process.env.NEXT_PUBLIC_POST_COLLECTION_ID,ID.unique() , {
+              const create_document = await databases.createDocument(process.env.NEXT_PUBLIC_DATABASE_ID, process.env.NEXT_PUBLIC_POST_COLLECTION_ID, ID.unique(), {
                 user_id:currentAccount.$id,
                 post_id:photoId.$id,
                 react_count:0,
-                image_location:`https://cloud.appwrite.io/v1/storage/buckets/6480d7c2b7e583d5cf63/files/${photoId.$id}/view?project=6480d2c47d708d9490c9&mode=admin`,
+                image_location:`${photoId.$id}`,
                 caption:caption,
                 name:currentAccount.name,
+                email: currentAccount.email,
+                creation_time: new Date()
               });
-              Router.reload();
+              if(create_document.$id){
+                const functions = new Functions(appwriteClient);
+                let function_promise = await functions.createExecution(process.env.NEXT_PUBLIC_FUNCTION_LPU_ID, currentAccount.$id);
+                console.log(function_promise)
+                clearPost();
+                handleClosePopup();
+              }
             }
           } catch (error) {
             console.log(error);
