@@ -15,6 +15,7 @@ const Profile = (props) => {
   const [profilePic,setProfilePic]=useState('');
   const storage = new Storage(appwriteClient);
   const [imageUrl, setImageUrl] = useState('');
+  const [data, setData] = useState([]);
 
   const databases=new Databases(appwriteClient);
   useEffect(() => {
@@ -34,6 +35,8 @@ const Profile = (props) => {
   
         if (docId) {
           fetchPreviewUrl(docId);
+        }else{
+          setImageUrl(`https://cloud.appwrite.io/v1/storage/buckets/${process.env.NEXT_PUBLIC_BUCKET_ID}/files/64887b6428d789279d1c/preview?quality=10&project=${process.env.NEXT_PUBLIC_PROJECT_ID}`);
         }
       } catch (error) {
         console.error('Error fetching profile picture:', error);
@@ -41,24 +44,22 @@ const Profile = (props) => {
     };
   
     const fetchPreviewUrl = async (docId) => {
-      try {
-        const previewUrl = await storage.getFilePreview(process.env.NEXT_PUBLIC_BUCKET_ID, docId,undefined,undefined,undefined,100);
-        setImageUrl(previewUrl);
-      } catch (error) {
-        console.error('Error fetching preview URL:', error);
-      }
+      setImageUrl(`https://cloud.appwrite.io/v1/storage/buckets/${process.env.NEXT_PUBLIC_BUCKET_ID}/files/${docId}/preview?quality=10&project=${process.env.NEXT_PUBLIC_PROJECT_ID}`);
     };
-  
-    fetchProfilePic();
-  }, [user]);
-  //console.log(imageUrl);
-  
-  
-   
-  //getProfileImageId();
-  
 
-  //console.log(profilePic);
+    fetchProfilePic();
+    fetchMyPosts();
+
+    async function fetchMyPosts(){
+      if(!user) return;
+      var post_promise = await databases.listDocuments(process.env.NEXT_PUBLIC_DATABASE_ID, process.env.NEXT_PUBLIC_POST_COLLECTION_ID, [
+        Query.equal("user_id", [user.$id]),
+        Query.limit(100),
+        Query.orderDesc("creation_time")
+      ]);
+      setData(d=>d.concat(post_promise.documents));
+    }
+  }, [user]);
   const [file, setFile] = useAtom(FileAtom);
   const [hobby, setHobby] = useAtom(HobbyAtom);
   const [uploadProfilePic, setUploadProfilePic] = useAtom(ProfilePictureAtom);
@@ -66,9 +67,6 @@ const Profile = (props) => {
   const showEditPopup = () => {
     setShowEdit(true);
   };
-  // console.log("showEdit:", showEdit);
-
-  // Render null if user is not defined
   if (!user) {
     return null;
   }
@@ -106,12 +104,10 @@ const Profile = (props) => {
             </div>
           ) : (
             <div className="flex flex-col items-center gap-3">
-              <div className="w-28 h-28 rounded-full">
-                <Image
-                  className="w-full h-full rounded-full"
-                  src={imageUrl.href}
-                  width={300}
-                  height={300}
+              <div className="w-28 h-28 rounded-full overflow-hidden">
+                <img
+                  className="max-w-full rounded-full"
+                  src={imageUrl}
                   alt="profile picture"
                 />
               </div>
@@ -135,13 +131,20 @@ const Profile = (props) => {
             <div className="w-full border border-[#747373]"></div>
             <div className="grid w-full">
               <div className="grid grid-cols-3 gap-5 mb-10">
-                <Image
-                  className="w-full h-full"
-                  src="/man.jpg"
-                  width={300}
-                  height={300}
-                  alt="profile picture"
-                />
+                {
+                  data.map(e=>{
+                    return (
+                      <Image
+                        className="w-full h-full"
+                        key={e.post_id}
+                        src={`https://cloud.appwrite.io/v1/storage/buckets/${process.env.NEXT_PUBLIC_BUCKET_ID}/files/${e.image_location}/preview?quality=75&project=${process.env.NEXT_PUBLIC_PROJECT_ID}`}
+                        width={300}
+                        height={300}
+                        alt="profile picture"
+                      />
+                    );
+                  })
+                }
               </div>
             </div>
           </div>

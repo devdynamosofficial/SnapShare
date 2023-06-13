@@ -98,7 +98,7 @@ export default function Contents(props) {
             </Link>
           </div>
           <div className="flex flex-col gap-6 w-full mt-20">
-            {data.sort((a, b)=>{return (b.creation_time - a.creation_time);}).map((d) => {
+            {data.sort((a, b)=>{console.log(typeof b.creation_time);return (new Date(b.creation_time) - new Date(a.creation_time));}).map((d) => {
               return <Card key={d.$id} user={props.user} info={d} />;
             })}
           </div>
