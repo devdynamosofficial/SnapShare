@@ -11,6 +11,7 @@ import { IoIosCheckmarkCircle } from "react-icons/io";
 import appwriteClient from '@/libs/appwrite';
 import useUser from "@/hooks/useUser";
 import { Databases, ID, Query, Storage } from "appwrite";
+import { useRouter } from "next/router";
 
 const EditProfile = () => {
   const {currentAccount:user}=useUser();
@@ -20,6 +21,7 @@ const EditProfile = () => {
   const [showEdit, setShowEdit] = useAtom(EditAtom);
   const [uploadProfilePic, setUploadProfilePic] = useAtom(ProfilePictureAtom);
   const storage = new Storage(appwriteClient);
+  const router = useRouter();
   const handleClosePopup = () => {
     setShowEdit(false);
     document.body.style.overflow = "auto";
@@ -49,9 +51,10 @@ const EditProfile = () => {
 
     if(photoId){
       console.log(photoId);
-      const create_document = databases.updateDocument(process.env.NEXT_PUBLIC_DATABASE_ID, process.env.NEXT_PUBLIC_USER_COLLECTION_ID,doc_id , {
+      const create_document = await databases.updateDocument(process.env.NEXT_PUBLIC_DATABASE_ID, process.env.NEXT_PUBLIC_USER_COLLECTION_ID,doc_id , {
         profile_pic:photoId.$id
       });
+      router.reload();
     }
     setUploadProfilePic(true);
     setShowEdit(false);

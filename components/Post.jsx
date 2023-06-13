@@ -10,7 +10,6 @@ import PostingAtom from "@/atoms/PostingAtom";
 import { Databases, ID, Storage, Functions } from "appwrite";
 import appwriteClient from '@/libs/appwrite';
 import useUser from "@/hooks/useUser";
-import Router from "next/router";
 
 const Post =  () => {
   const [showPopup, setShowPopup] = useAtom(UploadAtom);
