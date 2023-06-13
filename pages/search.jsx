@@ -57,7 +57,7 @@ const search = () => {
             <div className="space-y-4">
                 People found: <br/>
                 {
-                    people && people == -1 ? "Not Records Founds" : people.map((e, i)=>{
+                    people && people == -1 ? "No Records Founds" : people.map((e, i)=>{
                         return e==0 ? "" : (
                             <div className="bg-blue-200 flex" key={e.user_id}>
                                 <div className="w-full">
