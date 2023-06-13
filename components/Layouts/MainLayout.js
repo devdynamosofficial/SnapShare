@@ -11,6 +11,7 @@ export default function MainLayout(props) {
     return (
         <>
             <Sidebar user={props.user.currentAccount}></Sidebar>
+
             <Contents user={props.user}></Contents>
         </>
       

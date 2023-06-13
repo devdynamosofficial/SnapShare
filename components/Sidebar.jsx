@@ -62,7 +62,7 @@ const Sidebar = (props) => {
   
     fetchProfilePic();
   }, [user]);
-  console.log(imageUrl);
+  console.log(imageUrl)
   const handleButtonClick = () => {
     setShowPopup(true);
     document.body.style.overflow = "hidden";
