@@ -18,6 +18,7 @@ import { Databases, Query, Storage } from "appwrite";
 import appwriteClient from "@/libs/appwrite";
 
 const Sidebar = (props) => {
+
   const [showPopup, setShowPopup] = useAtom(UploadAtom);
   const [searchbar, setSearchbar] = useAtom(SearchAtom);
   const [file, setFile] = useAtom(FileAtom);

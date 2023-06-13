@@ -3,11 +3,16 @@ import { FETCH_STATUS } from "@/utils/constants";
 import { Account, Databases, ID } from "appwrite";
 import { useAtom } from "jotai";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect } from "react";
 import appwriteClient from "@/libs/appwrite"
 import { CgLivePhoto } from "react-icons/cg";
 import Link from "next/link";
+import LoadingAtom from "@/atoms/LoadingAtom";
+import Loading from './Loading'
+
 const Signup = () => {
+  const [isLoading, setLoading] = useAtom(LoadingAtom);
+
   const router = useRouter();
   const [form, setForm] = React.useState({
     name: '',
@@ -27,9 +32,14 @@ const Signup = () => {
     setForm((currState) => ({ ...currState, [name]: value }));
   };
 
+  useEffect(function(){
+    setLoading(false);
+  }, []);
+
   const onSubmit = async (event) => {
     event.preventDefault();
     setSignupStatus(FETCH_STATUS.LOADING);
+    setLoading(true);
 
     const account = new Account(appwriteClient);
 
@@ -58,6 +68,7 @@ const Signup = () => {
       router.push('/auth/signin');
     } catch (error) {
       // If there is an error appwrite sends the message along with the code
+      setLoading(false);
       setForm((currForm) => ({
         ...currForm,
         error: error.message,
@@ -72,6 +83,7 @@ const Signup = () => {
   };
   return (
     <>
+    {isLoading?(<Loading text="Creating Account..."/>):""}
     <div className="grid place-items-center mx-auto h-screen w-full md:w-[80%]">
 
       <div className="w-full flex md:flex-row flex-col justify-center items-center gap-7 p-5">
