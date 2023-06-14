@@ -6,17 +6,29 @@ import Card from '../Card';
 import { Databases, Query } from 'appwrite';
 import appwriteClient from '@/libs/appwrite';
 import Header from '@/components/Header'
+import { Router, useRouter } from 'next/router';
+import { useAtom } from "jotai";
+import counterAtom from "@/atoms/counterAtom";
 
 let post_fetch_count = 0, noPost = false, isFetching = false, isLoadedOnLoad;
 
 export default function Contents(props) {
+  const router=useRouter();
+  const [counter,setCounter]=useAtom(counterAtom);
+  //router.push('/home');
   const [data, setData] = useState([]);
   const { isLoadingAccount, currentAccount, isFriendListLoaded, friendsList } = props.user;
   useEffect(() => {
     const databases = new Databases(appwriteClient);
     if(!isLoadingAccount){
+      if(counter>0){
+        setCounter(0);
+        router.reload();
+        
+      }
       fetchPost();
       fetchMyPosts();
+      setCounter(1);
     }
     async function fetchMyPosts(){
       var limit = 5;
@@ -51,7 +63,7 @@ export default function Contents(props) {
             var friend_id = friends_w_posts.documents[i].friend_id;
             post_promise = await databases.listDocuments(process.env.NEXT_PUBLIC_DATABASE_ID, process.env.NEXT_PUBLIC_POST_COLLECTION_ID, [
               Query.equal("user_id", [friend_id]),
-              Query.limit(limit),
+              Query.limit(100),
               Query.orderDesc("creation_time")
             ]);
             if(post_promise.total>0){
