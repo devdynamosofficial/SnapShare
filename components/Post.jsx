@@ -1,6 +1,6 @@
 import UploadAtom from "@/atoms/UploadAtom";
 import { useAtom } from "jotai";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdPhotoLibrary } from "react-icons/md";
 import { AiFillCloseCircle } from "react-icons/ai";
 import Image from "next/image";
@@ -10,19 +10,27 @@ import PostingAtom from "@/atoms/PostingAtom";
 import { Databases, ID, Storage, Functions } from "appwrite";
 import appwriteClient from '@/libs/appwrite';
 import useUser from "@/hooks/useUser";
-import Router from "next/router";
+import LoadingAtom from "@/atoms/LoadingAtom";
+import Loading from './Loading'
+import { useRouter } from "next/router";
 
 const Post =  () => {
-  const [showPopup, setShowPopup] = useAtom(UploadAtom);
+  const [isLoading, setLoading] = useAtom(LoadingAtom);
+
+  const [showPopup, setShowPopup] = useAtom(UploadAtom)
   const [isDragging, setIsDragging] = useState(false);
   const [file, setFile] = useAtom(FileAtom);
   const [caption, setCaption] = useAtom(CaptionAtom);
   const [postClicked, setPostClicked] = useAtom(PostingAtom);
   const {currentAccount}=useUser();
-  
-  
+
+  const router = useRouter();
   
   const storage = new Storage(appwriteClient);
+
+  useEffect(function(){
+    setLoading(false);
+  }, []);
 
   const handleClosePopup = () => {
     setShowPopup(false);
@@ -60,6 +68,7 @@ const Post =  () => {
     const databases = new Databases(appwriteClient);
           const fileId=ID.unique();
           console.log(fileId);
+          setLoading(true);
           const promise = storage.createFile(
               process.env.NEXT_PUBLIC_BUCKET_ID,
               fileId,
@@ -81,7 +90,9 @@ const Post =  () => {
               if(create_document.$id){
                 const functions = new Functions(appwriteClient);
                 let function_promise = await functions.createExecution(process.env.NEXT_PUBLIC_FUNCTION_LPU_ID, currentAccount.$id);
-                console.log(function_promise)
+                console.log(function_promise);
+                router.reload();
+                setLoading(false);
                 clearPost();
                 handleClosePopup();
               }
@@ -104,6 +115,7 @@ const Post =  () => {
 
   return (
     <>
+      {isLoading?(<Loading text="Uplaoding"/>):""}
       <div className="w-full md:w-[40%] mt-28 md:mt-10 gap-3 mx-auto flex flex-col justify-center items-end">
         <div
           onDragEnter={handleEnter}

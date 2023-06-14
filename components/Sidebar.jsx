@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { MdOutlineExplore } from "react-icons/md";
-import { BsChatSquareDots } from "react-icons/bs";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { CgLivePhoto } from "react-icons/cg";
@@ -18,11 +17,11 @@ import { Databases, Query, Storage } from "appwrite";
 import appwriteClient from "@/libs/appwrite";
 
 const Sidebar = (props) => {
+
   const [showPopup, setShowPopup] = useAtom(UploadAtom);
   const [searchbar, setSearchbar] = useAtom(SearchAtom);
   const [file, setFile] = useAtom(FileAtom);
   const user = props.user;
-  console.log(user);
   const [imageUrl, setImageUrl] = useState('');
   const [profilePic,setProfilePic]=useState('');
   const storage = new Storage(appwriteClient);
@@ -45,6 +44,8 @@ const Sidebar = (props) => {
   
         if (docId) {
           fetchPreviewUrl(docId);
+        }else{
+          setImageUrl(`https://cloud.appwrite.io/v1/storage/buckets/${process.env.NEXT_PUBLIC_BUCKET_ID}/files/64887b6428d789279d1c/preview?quality=10&project=${process.env.NEXT_PUBLIC_PROJECT_ID}`);
         }
       } catch (error) {
         console.error('Error fetching profile picture:', error);
@@ -53,8 +54,8 @@ const Sidebar = (props) => {
   
     const fetchPreviewUrl = async (docId) => {
       try {
-        const previewUrl = await storage.getFilePreview(process.env.NEXT_PUBLIC_BUCKET_ID, docId,undefined,undefined,undefined,100);
-        setImageUrl(previewUrl);
+        const previewUrl = await storage.getFilePreview(process.env.NEXT_PUBLIC_BUCKET_ID, docId,undefined,undefined,undefined, 50);
+        setImageUrl(previewUrl.href);
       } catch (error) {
         console.error('Error fetching preview URL:', error);
       }
@@ -62,7 +63,6 @@ const Sidebar = (props) => {
   
     fetchProfilePic();
   }, [user]);
-  console.log(imageUrl);
   const handleButtonClick = () => {
     setShowPopup(true);
     document.body.style.overflow = "hidden";
@@ -116,7 +116,7 @@ const Sidebar = (props) => {
           className="flex items-center gap-3 mt-16 px-4 py-3 rounded-xl bg-[#001B00]"
         >
           <Image
-            src={imageUrl.href}
+            src={imageUrl}
             height={50}
             width={50}
             alt="Profile"

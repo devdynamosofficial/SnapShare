@@ -5,17 +5,30 @@ import { CgLivePhoto } from 'react-icons/cg';
 import Card from '../Card';
 import { Databases, Query } from 'appwrite';
 import appwriteClient from '@/libs/appwrite';
+import Header from '@/components/Header'
+import { Router, useRouter } from 'next/router';
+import { useAtom } from "jotai";
+import counterAtom from "@/atoms/counterAtom";
 
 let post_fetch_count = 0, noPost = false, isFetching = false, isLoadedOnLoad;
 
 export default function Contents(props) {
+  const router=useRouter();
+  const [counter,setCounter]=useAtom(counterAtom);
+  //router.push('/home');
   const [data, setData] = useState([]);
   const { isLoadingAccount, currentAccount, isFriendListLoaded, friendsList } = props.user;
   useEffect(() => {
     const databases = new Databases(appwriteClient);
     if(!isLoadingAccount){
+      if(counter>0){
+        setCounter(0);
+        router.reload();
+        
+      }
       fetchPost();
       fetchMyPosts();
+      setCounter(1);
     }
     async function fetchMyPosts(){
       var limit = 5;
@@ -50,7 +63,7 @@ export default function Contents(props) {
             var friend_id = friends_w_posts.documents[i].friend_id;
             post_promise = await databases.listDocuments(process.env.NEXT_PUBLIC_DATABASE_ID, process.env.NEXT_PUBLIC_POST_COLLECTION_ID, [
               Query.equal("user_id", [friend_id]),
-              Query.limit(limit),
+              Query.limit(100),
               Query.orderDesc("creation_time")
             ]);
             if(post_promise.total>0){
@@ -80,25 +93,10 @@ export default function Contents(props) {
   return (
     <div className="md:ml-[20%] w-full mx-auto flex flex-col justify-center gap-12 items-center p-10 md:mt-4">
           <div className="w-full grid md:hidden place-items-center grid-flow-col pt-3 gap-6 bg-[#001B00]/30 backdrop-blur-md fixed top-0">
-            <Link
-              href="/home"
-              className="flex items-center gap-2 p-2 my-4 mb-5 text-white"
-            >
-              <CgLivePhoto size={32} />
-              <div className="text-3xl font-bold pt-1">SnapShare</div>
-            </Link>
-            <Link href="/profile">
-              <Image
-                src="/man.jpg"
-                height={50}
-                width={50}
-                alt="Profile"
-                className="rounded-full cursor-pointer"
-              />
-            </Link>
+           <Header/>
           </div>
           <div className="flex flex-col gap-6 w-full mt-20">
-            {data.sort((a, b)=>{return (b.creation_time - a.creation_time);}).map((d) => {
+            {data.sort((a, b)=>{console.log(typeof b.creation_time);return (new Date(b.creation_time) - new Date(a.creation_time));}).map((d) => {
               return <Card key={d.$id} user={props.user} info={d} />;
             })}
           </div>
