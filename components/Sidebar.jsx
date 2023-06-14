@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { MdOutlineExplore } from "react-icons/md";
-import { BsChatSquareDots } from "react-icons/bs";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { CgLivePhoto } from "react-icons/cg";
