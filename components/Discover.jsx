@@ -25,7 +25,6 @@ const Discover = () => {
           Query.orderDesc("creation_time"),
           Query.offset(post_fetch_count*limit)
         ]);
-        console.log(post_promise.total);
         if(post_promise.total>0){
           post_fetch_count++;
           setData(d=>d.concat(post_promise.documents));
